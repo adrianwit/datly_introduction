@@ -1,0 +1,79 @@
+init:
+pipeline:
+  createDempDB:
+    action: dsunit:init
+    datastore: demo
+    recreate: false
+    config:
+      driverName: mysql
+      descriptor: '[username]:[password]@tcp(${dbIP.mysql}:3306)/[dbname]?parseTime=true'
+      credentials: $mysqlCredentials
+    admin:
+      datastore: mysql
+      ping: true
+      config:
+        driverName: mysql
+        descriptor: '[username]:[password]@tcp(${dbIP.mysql}:3306)/[dbname]?parseTime=true'
+        credentials: $mysqlCredentials
+    scripts:
+      - URL: ${appPath}/e2e/datastore/mysql/script/init.sql
+
+  applySchema:
+    action: exec:run
+    target: $target
+    checkError: true
+    init:
+      dbname: demo
+    secrets:
+      mydb: $mysqlCredentials
+    commands:
+      - export PATH=$PATH:/usr/local/bin/
+      - echo 'starting loading demo schema'
+      - docker exec  -i mysql_dev  mysql  -uroot -p${mydb.password} demo < ${appPath}/e2e/datastore/mysql/demo/script/schema.ddl
+
+  populateDemoDatastore:
+    action: dsunit:prepare
+    datastore: demo
+    URL: ${appPath}/e2e/datastore/mysql/demo/snapshot
+
+
+
+  dynamodb:
+    createAclDb:
+      action: dsunit:init
+      datastore: dyndb
+      config:
+        driverName: dyndb
+        parameters:
+          region: us-west-1
+          key: dummy
+          secret: dummy
+          endpoint: localhost:8000
+      scripts:
+        - URL: ${appPath}/e2e/datastore/dyndb/script/schema.ddl
+
+  prepare:
+    action: 'dsunit:prepare'
+    datastore: dyndb
+    expand: true
+    URL: ${appPath}/e2e/datastore/dyndb/snapshot
+
+
+  bqDev:
+    createBqDev:
+      action: dsunit:init
+      datastore: bqdev
+      config:
+        driverName: bigquery
+        credentials: $bqCredentials
+        parameters:
+          datasetId: bqdev
+      recreate: false
+      scripts:
+        - URL: ${appPath}/e2e/datastore/bigquery/bqdev/script/schema.ddl
+
+    prepare:
+      action: 'dsunit:prepare'
+      datastore: bqdev
+      expand: true
+      URL: ${appPath}/e2e/datastore/bigquery/bqdev/snapshot

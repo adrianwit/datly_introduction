@@ -1,0 +1,24 @@
+[
+	{},
+	{
+		"customer_name": "John Smith",
+		"due_date": "2022-02-14 12:00:00",
+		"id": 1,
+		"invoice_date": "$FormatTime('9508 hours ago In UTC', 'yyyy-MM-dd hh:mm:ss')",
+		"total_amount": "1000.00"
+	},
+	{
+		"customer_name": "Jane Doe",
+		"due_date": "2022-02-17 12:00:00",
+		"id": 2,
+		"invoice_date": "$FormatTime('9436 hours ago In UTC', 'yyyy-MM-dd hh:mm:ss')",
+		"total_amount": "500.00"
+	},
+	{
+		"customer_name": "Bob Johnson",
+		"due_date": "2022-02-19 12:00:00",
+		"id": 3,
+		"invoice_date": "$FormatTime('9388 hours ago In UTC', 'yyyy-MM-dd hh:mm:ss')",
+		"total_amount": "750.00"
+	}
+]

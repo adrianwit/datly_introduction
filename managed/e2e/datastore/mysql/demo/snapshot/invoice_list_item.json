@@ -1,0 +1,43 @@
+[
+	{},
+	{
+		"id": 1,
+		"invoice_id": 1,
+		"price": "250.00",
+		"product_name": "Product A",
+		"quantity": 2,
+		"total": "500.00"
+	},
+	{
+		"id": 2,
+		"invoice_id": 1,
+		"price": "100.00",
+		"product_name": "Product B",
+		"quantity": 3,
+		"total": "300.00"
+	},
+	{
+		"id": 3,
+		"invoice_id": 2,
+		"price": "500.00",
+		"product_name": "Product C",
+		"quantity": 1,
+		"total": "500.00"
+	},
+	{
+		"id": 4,
+		"invoice_id": 3,
+		"price": "175.00",
+		"product_name": "Product D",
+		"quantity": 2,
+		"total": "350.00"
+	},
+	{
+		"id": 5,
+		"invoice_id": 3,
+		"price": "225.00",
+		"product_name": "Product E",
+		"quantity": 1,
+		"total": "225.00"
+	}
+]

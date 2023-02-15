@@ -1,0 +1,13 @@
+[
+  {},
+  {
+    "ID": 1,
+    "Name": "Audience 1",
+    "MATCH_EXPRESSION": "location = US AND deals IN(1,3)"
+  },
+  {
+    "ID": 2,
+    "Name": "Audience 2",
+    "MATCH_EXPRESSION": "location = PL AND deals IN(2,4)"
+  }
+]

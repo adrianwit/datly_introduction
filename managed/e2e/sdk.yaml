@@ -1,0 +1,6 @@
+pipeline:
+  setGo:
+    target: $target
+    action: sdk:set
+    sdk: go
+    version: ${GoVersion}

@@ -1,0 +1,67 @@
+init:
+  dbname: demo
+  mysqlCredentials: mysql-e2e
+  mysqlCred: ${secrets.${mysqlCredentials}}
+  k: 0
+
+  tables:
+    - name: trader
+      SQL: SELECT * FROM trader
+
+pipeline:
+  info:
+    action: print
+    message: preparing staging DB ${mysqlDevCred.Endpoint} from ${prodMysqlCred.Endpoint}
+
+  registerSource:
+    action: dsunit:register
+    datastore: demo
+    config:
+      driverName: mysql
+      descriptor: '[username]:[password]@tcp(127.0.0.1:3306)/demo?parseTime=true'
+      credentials: $mysqlCredentials
+
+
+  prepareDataSet:
+    init:
+      filename: populate/${tables[$k].name}.json
+    loop:
+      action: print
+      message: $k/$Len($tables) -> $tables[$k].name $filename
+
+    dumpTable:
+      #when: $HasResource(${filename}):false
+      init:
+        table: ${tables[$k].name}
+        SQL: ${tables[$k].SQL}
+      action: dsunit:freeze
+      omitEmpty: true
+      TimeFormat: yyyy-MM-dd hh:mm:ss
+      Reset: true
+      RelativeDate:
+        - UPDATED
+        - invoice_date
+        - CREATED
+        - UPDATETIMED
+
+      ignore:
+        - UPDATED
+        - CREATED
+
+      datastore: demo
+      sql:  $SQL
+      destURL: populate/${table}.json
+
+    info:
+      action: print
+      message: $AsJSON(${dumpTable})
+
+    inc:
+      action: nop
+      init:
+        _ : $k++
+
+    goto:
+      when: $k < $Len($tables)
+      action: goto
+      task: prepareDataSet

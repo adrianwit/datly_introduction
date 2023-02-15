@@ -1,0 +1,27 @@
+[
+	{},
+	{
+		"email": "johndoe@example.com",
+		"first_name": "John",
+		"join_date": "2021-01-01 12:00:00",
+		"last_name": "Doe",
+		"phone_number": "+1-555-123-4567",
+		"id": 1
+	},
+	{
+		"email": "janesmith@example.com",
+		"first_name": "Jane",
+		"join_date": "2021-01-15 12:00:00",
+		"last_name": "Smith",
+		"phone_number": "+44-20-123-4567",
+		"id": 2
+	},
+	{
+		"email": "bobjohnson@example.com",
+		"first_name": "Bob",
+		"join_date": "2021-02-01 12:00:00",
+		"last_name": "Johnson",
+		"phone_number": "+61-2-123-4567",
+		"id": 3
+	}
+]
