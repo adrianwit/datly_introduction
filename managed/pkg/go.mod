@@ -6,15 +6,20 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/stretchr/testify v1.8.1
 	github.com/viant/bigquery v0.2.1-0.20221005024313-4286a9622882
-	github.com/viant/datly v0.2.15-0.20230215004138-3dadeee9e924
+	github.com/viant/datly v0.2.15-0.20230215171714-5c81aace296b
 	github.com/viant/dyndb v0.1.4-0.20221214043424-27654ab6ed9c
 	github.com/viant/toolbox v0.34.6-0.20221112031702-3e7cdde7f888
 )
 
 require (
+	cloud.google.com/go v0.104.0 // indirect
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
+	cloud.google.com/go/iam v0.5.0 // indirect
+	cloud.google.com/go/secretmanager v1.6.0 // indirect
+	cloud.google.com/go/storage v1.28.0 // indirect
 	github.com/aerospike/aerospike-client-go v4.5.2+incompatible // indirect
+	github.com/aws/aws-sdk-go v1.44.12 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.2 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.3 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.3 // indirect
@@ -43,6 +48,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.6.0 // indirect
@@ -57,7 +63,10 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/viant/afs v1.16.1-0.20220708154004-5cc767a16d95 // indirect
+	github.com/viant/afsc v1.8.1-0.20220721172758-a0713d05bfdd // indirect
+	github.com/viant/cloudless v1.3.1-0.20230214231512-6dc83584f50e // indirect
 	github.com/viant/datly/plugins v0.0.0-20230215004138-3dadeee9e924 // indirect
+	github.com/viant/datly/xregistry/types/core v0.0.0-20230215004138-3dadeee9e924 // indirect
 	github.com/viant/datly/xregistry/types/custom v0.0.0-20230215004138-3dadeee9e924 // indirect
 	github.com/viant/gmetric v0.2.7-0.20220508155136-c2e3c95db446 // indirect
 	github.com/viant/godiff v0.0.0-20230105175448-93ea25ecc0ac // indirect
@@ -78,6 +87,7 @@ require (
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.102.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20221024183307-1bc688fe9f3e // indirect
@@ -87,4 +97,3 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
