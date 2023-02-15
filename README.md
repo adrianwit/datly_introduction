@@ -1,4 +1,4 @@
-## Datly - modern flexible ORM for rapid developement
+## Datly - modern flexible ORM for rapid development
 
 ### Managed mode
 
