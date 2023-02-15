@@ -2,7 +2,6 @@ package domain
 
 import (
 	"context"
-	"fmt"
 	"github.com/viant/parsly"
 	"github.com/viant/sqlparser"
 	"github.com/viant/sqlparser/expr"
@@ -26,7 +25,6 @@ type Deal struct {
 }
 
 func (a *Audience) OnFetch(ctx context.Context) error {
-	fmt.Printf("JERE 1\n")
 	if a.MatchExpression != nil && *a.MatchExpression != "" {
 		qualify := expr.Qualify{}
 		cursor := parsly.NewCursor("", []byte(*a.MatchExpression), 0)
