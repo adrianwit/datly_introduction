@@ -37,7 +37,9 @@
     datly -C='demo|mysql|demo:demo@tcp(127.0.0.1:3306)/demo?parseTime=true' \
       -X audience.sql
     open http://127.0.0.1:8080/v1/api/meta/struct/dev/audience    
+ 
 ```
+
 
 
 ## Executor Service
