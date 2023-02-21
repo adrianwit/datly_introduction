@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS DEALS;
 
 
 CREATE TABLE invoice (
-                         id INT PRIMARY KEY,
+                         id INT AUTO_INCREMENT PRIMARY KEY,
                          customer_name VARCHAR(255),
                          invoice_date DATE,
                          due_date DATE,
@@ -18,7 +18,7 @@ CREATE TABLE invoice (
 
 
 CREATE TABLE invoice_list_item (
-                                   id INT PRIMARY KEY,
+                                   id INT AUTO_INCREMENT PRIMARY KEY,
                                    invoice_id INT,
                                    product_name VARCHAR(255),
                                    quantity INT,
@@ -28,7 +28,7 @@ CREATE TABLE invoice_list_item (
 );
 
 CREATE TABLE trader (
-                        id INT PRIMARY KEY,
+                        id INT AUTO_INCREMENT PRIMARY KEY,
                         first_name VARCHAR(50) NOT NULL,
                         last_name VARCHAR(50) NOT NULL,
                         email VARCHAR(100) UNIQUE,
