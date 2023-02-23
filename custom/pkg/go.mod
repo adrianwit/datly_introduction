@@ -1,7 +1,5 @@
-module github.com/viant/datly/xregistry/types/custom
+module github.com/viant/xdatly/types/custom
 
 go 1.17
 
-require github.com/viant/datly/xregistry/types/core v0.0.0-20230203194142-0e99a7c2d722
-
-replace github.com/viant/datly/xregistry/types/core => ../core
+require github.com/viant/xdatly/types/core v0.0.0-20230221181206-d2370898f2c4

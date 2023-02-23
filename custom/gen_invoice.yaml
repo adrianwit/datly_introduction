@@ -1,0 +1,13 @@
+init:
+  appPath: $WorkingDirectory(../)
+  xdatlyDir: ${appPath}custom/pkg
+
+pipeline:
+  generate_rule:
+    action: exec:run
+    comments: generate rule
+    target: $target
+    checkError: true
+    commands:
+      - echo '$appPath'
+      - /usr/local/bin/datly -X=${appPath}/managed/dsql/invoice.sql -C='demo|mysql|demo:demo@tcp(127.0.0.1:3306)/demo${qMark}parseTime=true' --relative=${xdatlyDir} -G=post --dsqlOutput=${appPath}/custom/dsql/invoice --goFileOut=${xdatlyDir}/custom/invoice_enc.go
