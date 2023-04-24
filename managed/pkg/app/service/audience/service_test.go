@@ -27,7 +27,7 @@ func TestServiceByID(t *testing.T) {
 	cfg.InitTest()
 	srv := audience.New(cfg)
 	err := srv.Init(context.Background())
-	item, err := srv.ByID(context.Background(), 3)
+	item, err := srv.ByID(context.Background(), 1)
 	if !assert.Nil(t, err) {
 		return
 	}

@@ -19,7 +19,7 @@ func TestServiceList(t *testing.T) {
 	if !assert.Nil(t, err) {
 		return
 	}
-	products, err := srv.ListWithPeriod(context.Background(), "yesterday")
+	products, err := srv.ListWithPeriod(context.Background(), "today")
 	if !assert.Nil(t, err) {
 		return
 	}

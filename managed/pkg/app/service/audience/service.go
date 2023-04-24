@@ -37,7 +37,7 @@ func (s *Service) List(ctx context.Context) ([]*domain.Audience, error) {
 
 func (s *Service) Init(ctx context.Context) error {
 	conn := s.reader.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
-	invoiceView := view.NewView(viewID, viewTable,
+	aView := view.NewView(viewID, viewTable,
 		view.WithConnector(conn),
 		view.WithCriteria("ID"),
 		view.WithViewType(reflect.TypeOf(&domain.Audience{})),
@@ -45,7 +45,7 @@ func (s *Service) Init(ctx context.Context) error {
 			view.NwReferenceView("ID", "id",
 				view.NewView("deal", "DEAL", view.WithConnector(conn)))),
 	)
-	s.reader.AddViews(invoiceView)
+	s.reader.AddViews(aView)
 	return s.reader.Init(ctx)
 }
 
