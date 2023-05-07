@@ -2,10 +2,10 @@ package trader
 
 import (
 	"context"
+	"github.com/viant/datly/reader"
 	"github.com/viant/datly/view"
 	"github.com/viant/demo/app/config"
 	"github.com/viant/demo/app/domain"
-	"github.com/viant/demo/app/service/reader"
 	"reflect"
 )
 
@@ -21,7 +21,7 @@ type Service struct {
 
 func (s *Service) ByID(ctx context.Context, id int) (*domain.Trader, error) {
 	var result = make([]*domain.Trader, 0)
-	err := s.reader.ReadWithCriteria(ctx, viewID, &result, "id = ?", id)
+	err := s.reader.ReadInto(ctx, viewID, &result, reader.WithCriteria("id = ?", id))
 	if len(result) == 0 {
 		return nil, err
 	}
@@ -31,13 +31,13 @@ func (s *Service) ByID(ctx context.Context, id int) (*domain.Trader, error) {
 
 func (s *Service) List(ctx context.Context) ([]*domain.Trader, error) {
 	var result = make([]*domain.Trader, 0)
-	err := s.reader.Read(ctx, viewID, &result)
+	err := s.reader.ReadInto(ctx, viewID, &result)
 	return result, err
 }
 
 func (s *Service) Init(ctx context.Context) error {
-	demoConn := s.reader.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
-	aclConn := s.reader.AddConnector(s.config.AclDb.Name, s.config.AclDb.Driver, s.config.AclDb.DSN)
+	demoConn := s.reader.Resource.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
+	aclConn := s.reader.Resource.AddConnector(s.config.AclDb.Name, s.config.AclDb.Driver, s.config.AclDb.DSN)
 
 	aView := view.NewView(viewID, viewTable,
 		view.WithConnector(demoConn),
@@ -53,8 +53,8 @@ func (s *Service) Init(ctx context.Context) error {
                     FROM USER_ACL `),
 					view.WithConnector(aclConn)))),
 	)
-	s.reader.AddViews(aView)
-	return s.reader.Init(ctx)
+	s.reader.Resource.AddViews(aView)
+	return s.reader.Resource.Init(ctx)
 }
 
 func New(cfg *config.Config) *Service {

@@ -2,10 +2,10 @@ package audience
 
 import (
 	"context"
+	"github.com/viant/datly/reader"
 	"github.com/viant/datly/view"
 	"github.com/viant/demo/app/config"
 	"github.com/viant/demo/app/domain"
-	"github.com/viant/demo/app/service/reader"
 	"reflect"
 )
 
@@ -21,7 +21,7 @@ type Service struct {
 
 func (s *Service) ByID(ctx context.Context, id int) (*domain.Audience, error) {
 	var result = make([]*domain.Audience, 0)
-	err := s.reader.ReadWithCriteria(ctx, viewID, &result, "id = ?", id)
+	err := s.reader.ReadInto(ctx, viewID, &result, reader.WithCriteria("id = ?", id))
 	if len(result) == 0 {
 		return nil, err
 	}
@@ -31,12 +31,12 @@ func (s *Service) ByID(ctx context.Context, id int) (*domain.Audience, error) {
 
 func (s *Service) List(ctx context.Context) ([]*domain.Audience, error) {
 	var result = make([]*domain.Audience, 0)
-	err := s.reader.Read(ctx, viewID, &result)
+	err := s.reader.ReadInto(ctx, viewID, &result)
 	return result, err
 }
 
 func (s *Service) Init(ctx context.Context) error {
-	conn := s.reader.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
+	conn := s.reader.Resource.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
 	aView := view.NewView(viewID, viewTable,
 		view.WithConnector(conn),
 		view.WithCriteria("ID"),
@@ -45,8 +45,8 @@ func (s *Service) Init(ctx context.Context) error {
 			view.NwReferenceView("ID", "id",
 				view.NewView("deal", "DEAL", view.WithConnector(conn)))),
 	)
-	s.reader.AddViews(aView)
-	return s.reader.Init(ctx)
+	s.reader.Resource.AddViews(aView)
+	return s.reader.Resource.Init(ctx)
 }
 
 func New(cfg *config.Config) *Service {

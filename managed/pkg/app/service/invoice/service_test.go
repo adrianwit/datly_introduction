@@ -16,6 +16,9 @@ func TestServiceList(t *testing.T) {
 	cfg.InitTest()
 	srv := invoice.New(cfg)
 	err := srv.Init(context.Background())
+	if !assert.Nil(t, err) {
+		return
+	}
 	invoices, err := srv.List(context.Background())
 	assert.Nil(t, err)
 	toolbox.DumpIndent(invoices, true)
@@ -55,7 +58,6 @@ func TestServiceInsert(t *testing.T) {
 	for _, anInvoice := range invoices {
 		invoice, err := srv.ByID(context.Background(), anInvoice.Id)
 		assert.Nil(t, err)
-
 		toolbox.DumpIndent(invoice, true)
 	}
 }

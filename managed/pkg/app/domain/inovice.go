@@ -8,7 +8,7 @@ type Invoice struct {
 	InvoiceDate  *time.Time `sqlx:"name=invoice_date"`
 	DueDate      *time.Time `sqlx:"name=due_date"`
 	TotalAmount  *string    `sqlx:"name=total_amount"`
-	Items        []*Item
+	Items        []*Item    `datly:"relColumn=id,refTable=invoice_list_item,refColumn=invoice_id"`
 }
 
 type Item struct {

@@ -3,11 +3,10 @@ package product
 import (
 	"context"
 	_ "embed"
-	dreader "github.com/viant/datly/reader"
+	"github.com/viant/datly/reader"
 	"github.com/viant/datly/view"
 	"github.com/viant/demo/app/config"
 	"github.com/viant/demo/app/domain"
-	"github.com/viant/demo/app/service/reader"
 	"reflect"
 )
 
@@ -23,7 +22,7 @@ type Service struct {
 
 func (s *Service) ByID(ctx context.Context, id int) (*domain.Product, error) {
 	var result = make([]*domain.Product, 0)
-	err := s.reader.ReadWithCriteria(ctx, viewID, &result, "id = ?", id)
+	err := s.reader.ReadInto(ctx, viewID, &result, reader.WithCriteria("id = ?", id))
 	if len(result) == 0 {
 		return nil, err
 	}
@@ -32,15 +31,13 @@ func (s *Service) ByID(ctx context.Context, id int) (*domain.Product, error) {
 }
 func (s *Service) List(ctx context.Context) ([]*domain.Product, error) {
 	var result = make([]*domain.Product, 0)
-	err := s.reader.Read(ctx, viewID, &result)
+	err := s.reader.ReadInto(ctx, viewID, &result)
 	return result, err
 }
 
 func (s *Service) ListWithPeriod(ctx context.Context, period string) ([]*domain.Product, error) {
 	var result = make([]*domain.Product, 0)
-	err := s.reader.ReadWithSession(ctx, viewID, &result, func(aView *view.View, session *dreader.Session) error {
-		return aView.SetParameter("performance:period", session.Selectors, period)
-	})
+	err := s.reader.ReadInto(ctx, viewID, &result, reader.WithParameter("performance:period", period))
 	return result, err
 }
 
@@ -48,8 +45,8 @@ func (s *Service) ListWithPeriod(ctx context.Context, period string) ([]*domain.
 var performanceVQL string
 
 func (s *Service) Init(ctx context.Context) error {
-	demoConn := s.reader.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
-	bqDevConn := s.reader.AddConnector(s.config.BqDev.Name, s.config.BqDev.Driver, s.config.BqDev.DSN)
+	demoConn := s.reader.Resource.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
+	bqDevConn := s.reader.Resource.AddConnector(s.config.BqDev.Name, s.config.BqDev.Driver, s.config.BqDev.DSN)
 
 	aView := view.NewView(viewID, viewTable,
 		view.WithConnector(demoConn),
@@ -69,8 +66,8 @@ func (s *Service) Init(ctx context.Context) error {
 						)))),
 					view.WithConnector(bqDevConn)))),
 	)
-	s.reader.AddViews(aView)
-	return s.reader.Init(ctx)
+	s.reader.Resource.AddViews(aView)
+	return s.reader.Resource.Init(ctx)
 }
 
 func New(cfg *config.Config) *Service {

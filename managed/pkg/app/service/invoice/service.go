@@ -3,11 +3,10 @@ package invoice
 import (
 	"context"
 	"github.com/viant/datly/executor"
+	"github.com/viant/datly/reader"
 	"github.com/viant/datly/view"
 	"github.com/viant/demo/app/config"
 	"github.com/viant/demo/app/domain"
-	mExecutor "github.com/viant/demo/app/service/executor"
-	"github.com/viant/demo/app/service/reader"
 	"reflect"
 )
 
@@ -22,12 +21,12 @@ const (
 type Service struct {
 	reader   *reader.Service
 	config   *config.Config
-	executor *mExecutor.Service
+	executor *executor.Executor
 }
 
 func (s *Service) ByID(ctx context.Context, id int) (*domain.Invoice, error) {
 	var result = make([]*domain.Invoice, 0)
-	err := s.reader.ReadWithCriteria(ctx, viewID, &result, "id = ?", id)
+	err := s.reader.ReadInto(ctx, viewID, &result, reader.WithCriteria("id = ?", id))
 	if len(result) == 0 {
 		return nil, err
 	}
@@ -36,39 +35,28 @@ func (s *Service) ByID(ctx context.Context, id int) (*domain.Invoice, error) {
 
 func (s *Service) List(ctx context.Context) ([]*domain.Invoice, error) {
 	var result = make([]*domain.Invoice, 0)
-	err := s.reader.Read(ctx, viewID, &result)
+	err := s.reader.ReadInto(ctx, viewID, &result)
 	return result, err
 }
 
 func (s *Service) Insert(ctx context.Context, invoices ...*Invoice) error {
-	aView, err := s.executor.View(viewInsertID)
+	aView, err := s.reader.Resource.View(viewInsertID)
 	if err != nil {
 		return err
 	}
-
-	selectors := &view.Selectors{Index: map[string]*view.Selector{}}
-	if err = aView.SetParameter(bodyParamName, selectors, invoices); err != nil {
-		return err
-	}
-
-	session, err := executor.NewSession(selectors, aView)
-	if err != nil {
-		return err
-	}
-
-	_, err = s.executor.ExecSession(ctx, session)
-	return err
+	return s.executor.Execute(ctx, aView, executor.WithParameter(bodyParamName, invoices))
 }
 
 func (s *Service) Init(ctx context.Context) error {
-	conn := s.reader.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
+	conn := s.reader.Resource.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
 	invoiceView := view.NewView(viewID, viewTable,
 		view.WithConnector(conn),
 		view.WithCriteria("id"),
 		view.WithViewType(reflect.TypeOf(&domain.Invoice{})),
-		view.WithOneToMany("Items", "id",
-			view.NwReferenceView("", "invoice_id",
-				view.NewView("items", "invoice_list_item", view.WithConnector(conn)))),
+		//This is optional since go struct defines datly rel/ref tag
+		//view.WithOneToMany("Items", "id",
+		//	view.NwReferenceView("", "invoice_id",
+		//		view.NewView("items", "invoice_list_item", view.WithConnector(conn)))),
 	)
 
 	insertSQL := `$sequencer.Allocate("invoice", $Unsafe.Invoice, "Id")
@@ -98,23 +86,17 @@ $sequencer.Allocate("invoice_list_item", $Unsafe.Invoice, "Item/Id")
 			),
 		),
 	)
-
-	s.reader.AddViews(invoiceView)
-	s.executor.AddViews(invoiceInsertView)
-	if err := s.reader.Init(ctx); err != nil {
+	s.reader.Resource.AddViews(invoiceView)
+	s.reader.Resource.AddViews(invoiceInsertView)
+	if err := s.reader.Resource.Init(ctx); err != nil {
 		return err
 	}
-
-	if err := s.executor.Init(ctx); err != nil {
-		return err
-	}
-
 	return nil
 }
 
 func New(cfg *config.Config) *Service {
 	ret := &Service{config: cfg}
-	ret.reader = &reader.Service{}
-	ret.executor = &mExecutor.Service{}
+	ret.reader = reader.New()
+	ret.executor = executor.New()
 	return ret
 }
