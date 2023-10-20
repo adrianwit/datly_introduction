@@ -1,0 +1,44 @@
+[
+  {},
+  {
+    "ID": 1,
+    "NAME": "Product A",
+    "VENDOR_ID": 1,
+    "CREATED": "<ds:sql[\" SELECT CURRENT_DATE() \"]>",
+    "STATUS": 1,
+    "USER_CREATED": 1
+  },
+  {
+    "ID": 2,
+    "NAME": "Product B",
+    "VENDOR_ID": 1,
+    "CREATED": "<ds:sql[\" SELECT CURRENT_DATE() \"]>",
+    "STATUS": 1,
+    "USER_CREATED": 1
+  },
+
+  {
+    "ID": 3,
+    "NAME": "Product C",
+    "VENDOR_ID": 2,
+    "CREATED": "<ds:sql[\" SELECT CURRENT_DATE() \"]>",
+    "STATUS": 1,
+    "USER_CREATED": 2
+  },
+  {
+    "ID": 4,
+    "NAME": "Product D",
+    "VENDOR_ID": 2,
+    "CREATED": "<ds:sql[\" SELECT CURRENT_DATE() \"]>",
+    "STATUS": 1,
+    "USER_CREATED": 2
+  },
+  {
+    "ID": 5,
+    "NAME": "Product E",
+    "VENDOR_ID": 2,
+    "CREATED": "<ds:sql[\" SELECT CURRENT_DATE() \"]>",
+    "STATUS": 1,
+    "USER_CREATED": 2
+  }
+]

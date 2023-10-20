@@ -1,7 +1,6 @@
 init:
   appPath: $WorkingDirectory(./..)
-  '!authWith': $params.authWith
-  GoVersion: 1.21
+  GoVersion: 1.17
   GOPATH: ${env.HOME}/go
   target:
     URL: ssh://localhost/
@@ -9,19 +8,13 @@ init:
   mysqlCredentials: mysql-e2e
   dbIP:
     mysql: 127.0.0.1
-  bqCredentials: $authWith
-  gcpProjectID: $bqCredentials
   yesterday: $FormatTime('yesterdayInUTC', 'yyyy-MM-dd HH:mm:ss')
   today: $FormatTime('nowInUTC', 'yyyy-MM-dd HH:mm:ss')
 
+  projectPath: ${appPath}
+  datlyBin: ${projectPath}/bin
+
 pipeline:
-
-  setSdk:
-    action: run
-    description: set sdk
-    request: '@sdk'
-    tasks: '*'
-
   init:
     description: initialises system service and datastore
     initService:
@@ -33,3 +26,13 @@ pipeline:
       action: run
       request: '@datastore/datastore.yaml'
       tasks: '*'
+
+  build:
+    action: run
+    request: '@build'
+    tasks: '*'
+  rule:
+    action: run
+    description: build rule
+    request: '@rule'
+    tasks: '*'

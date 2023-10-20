@@ -2,7 +2,8 @@ package audience
 
 import (
 	"context"
-	"github.com/viant/datly/reader"
+	"github.com/viant/datly"
+	"github.com/viant/datly/service/reader"
 	"github.com/viant/datly/view"
 	"github.com/viant/demo/app/config"
 	"github.com/viant/demo/app/domain"
@@ -15,13 +16,13 @@ const (
 )
 
 type Service struct {
-	reader *reader.Service
+	*datly.Service
 	config *config.Config
 }
 
 func (s *Service) ByID(ctx context.Context, id int) (*domain.Audience, error) {
 	var result = make([]*domain.Audience, 0)
-	err := s.reader.ReadInto(ctx, viewID, &result, reader.WithCriteria("id = ?", id))
+	err := s.Read(ctx, viewID, &result, reader.WithCriteria("id = ?", id))
 	if len(result) == 0 {
 		return nil, err
 	}
@@ -31,26 +32,27 @@ func (s *Service) ByID(ctx context.Context, id int) (*domain.Audience, error) {
 
 func (s *Service) List(ctx context.Context) ([]*domain.Audience, error) {
 	var result = make([]*domain.Audience, 0)
-	err := s.reader.ReadInto(ctx, viewID, &result)
+	err := s.Read(ctx, viewID, &result)
 	return result, err
 }
 
 func (s *Service) Init(ctx context.Context) error {
-	conn := s.reader.Resource.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
+	err := s.AddConnectors(ctx, view.NewConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN))
+	if err != nil {
+		return err
+	}
 	aView := view.NewView(viewID, viewTable,
-		view.WithConnector(conn),
 		view.WithCriteria("ID"),
 		view.WithViewType(reflect.TypeOf(&domain.Audience{})),
 		view.WithOneToMany("Deals", "deal_ids",
 			view.NwReferenceView("ID", "id",
-				view.NewView("deal", "DEAL", view.WithConnector(conn)))),
+				view.NewView("deal", "DEAL"))),
 	)
-	s.reader.Resource.AddViews(aView)
-	return s.reader.Resource.Init(ctx)
+	return s.AddViews(ctx, aView)
 }
 
-func New(cfg *config.Config) *Service {
-	ret := &Service{config: cfg}
-	ret.reader = &reader.Service{}
+func New(config *config.Config) *Service {
+	ret := &Service{config: config}
+	ret.Service, _ = datly.New(context.Background())
 	return ret
 }

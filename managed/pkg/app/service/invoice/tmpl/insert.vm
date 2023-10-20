@@ -1,0 +1,13 @@
+
+
+$sequencer.Allocate("invoice", $Unsafe.Invoice, "Id")
+$sequencer.Allocate("invoice_list_item", $Unsafe.Invoice, "Item/Id")
+#foreach($recInvoice in $Unsafe.Invoice)
+    $sql.Insert($recInvoice, "invoice");
+      #foreach($recItem in $recInvoice.Item)
+      #if($recItem)
+          #set($recItem.InvoiceId = $recInvoice.Id)
+          $sql.Insert($recItem, "invoice_list_item");
+      #end
+#end
+#end

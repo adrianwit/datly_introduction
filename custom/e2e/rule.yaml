@@ -1,0 +1,10 @@
+init:
+pipeline:
+  build:
+    action: exec:run
+    target: $target
+    checkError: true
+    systemPaths:
+      - /usr/local/bin
+    commands:
+      -  datly dsql -p=${projectPath} -s=dsql/invoice/invoice.sql -r=repo/dev

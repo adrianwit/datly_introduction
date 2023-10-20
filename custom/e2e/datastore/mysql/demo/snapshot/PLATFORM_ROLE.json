@@ -1,0 +1,15 @@
+[
+  {},
+  {
+    "Id": 1,
+    "Name": "ADMIN"
+  },
+  {
+    "Id": 2,
+    "Name": "MEMBER"
+  },
+  {
+    "Id": 3,
+    "Name": "VIEWER"
+  }
+]

@@ -16,6 +16,9 @@ func TestServiceList(t *testing.T) {
 	cfg.InitTest()
 	srv := trader.New(cfg)
 	err := srv.Init(context.Background())
+	if !assert.Nil(t, err) {
+		return
+	}
 	traders, err := srv.List(context.Background())
 	assert.Nil(t, err)
 	toolbox.DumpIndent(traders, true)

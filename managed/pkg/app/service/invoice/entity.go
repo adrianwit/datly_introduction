@@ -17,7 +17,7 @@ type Invoice struct {
 	InvoiceDate  *time.Time  `sqlx:"name=invoice_date" json:",omitempty"`
 	DueDate      *time.Time  `sqlx:"name=due_date" json:",omitempty"`
 	TotalAmount  *float64    `sqlx:"name=total_amount" json:",omitempty"`
-	Item         []*Item     `typeName:"Item" sqlx:"-"`
+	Item         []*Item     `typeName:"Items" sqlx:"-"`
 	Has          *InvoiceHas `presenceIndex:"true" typeName:"InvoiceHas" json:"-" sqlx:"presence=true"`
 }
 

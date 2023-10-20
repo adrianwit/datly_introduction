@@ -1,0 +1,7 @@
+pipeline:
+  build:
+    action: exec:run
+    target: $target
+    checkError: true
+    commands:
+      - datly build -p=$projectPath -r=standalone -d='${projectPath}/bin' -o=darwin -a=arm64

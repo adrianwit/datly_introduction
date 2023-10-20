@@ -15,6 +15,9 @@ func TestServiceList(t *testing.T) {
 	cfg.InitTest()
 	srv := audience.New(cfg)
 	err := srv.Init(context.Background())
+	if !assert.Nil(t, err) {
+		return
+	}
 	items, err := srv.List(context.Background())
 	if !assert.Nil(t, err) {
 		return
@@ -27,6 +30,9 @@ func TestServiceByID(t *testing.T) {
 	cfg.InitTest()
 	srv := audience.New(cfg)
 	err := srv.Init(context.Background())
+	if !assert.Nil(t, err) {
+		return
+	}
 	item, err := srv.ByID(context.Background(), 1)
 	if !assert.Nil(t, err) {
 		return

@@ -1,3 +1,3 @@
 package main
 
-import _ "github.com/viant/xdatly/types/custom"
+import _ "github.com/awitas/myapp"

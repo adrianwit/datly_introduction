@@ -2,7 +2,8 @@ package trader
 
 import (
 	"context"
-	"github.com/viant/datly/reader"
+	"github.com/viant/datly"
+	"github.com/viant/datly/service/reader"
 	"github.com/viant/datly/view"
 	"github.com/viant/demo/app/config"
 	"github.com/viant/demo/app/domain"
@@ -15,13 +16,13 @@ const (
 )
 
 type Service struct {
-	reader *reader.Service
+	*datly.Service
 	config *config.Config
 }
 
 func (s *Service) ByID(ctx context.Context, id int) (*domain.Trader, error) {
 	var result = make([]*domain.Trader, 0)
-	err := s.reader.ReadInto(ctx, viewID, &result, reader.WithCriteria("id = ?", id))
+	err := s.Read(ctx, viewID, &result, reader.WithCriteria("id = ?", id))
 	if len(result) == 0 {
 		return nil, err
 	}
@@ -31,14 +32,19 @@ func (s *Service) ByID(ctx context.Context, id int) (*domain.Trader, error) {
 
 func (s *Service) List(ctx context.Context) ([]*domain.Trader, error) {
 	var result = make([]*domain.Trader, 0)
-	err := s.reader.ReadInto(ctx, viewID, &result)
+	err := s.Read(ctx, viewID, &result)
 	return result, err
 }
 
 func (s *Service) Init(ctx context.Context) error {
-	demoConn := s.reader.Resource.AddConnector(s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
-	aclConn := s.reader.Resource.AddConnector(s.config.AclDb.Name, s.config.AclDb.Driver, s.config.AclDb.DSN)
-
+	demoConn, err := s.AddConnector(ctx, s.config.DemoDb.Name, s.config.DemoDb.Driver, s.config.DemoDb.DSN)
+	if err != nil {
+		return err
+	}
+	aclConn, err := s.AddConnector(ctx, s.config.AclDb.Name, s.config.AclDb.Driver, s.config.AclDb.DSN)
+	if err != nil {
+		return err
+	}
 	aView := view.NewView(viewID, viewTable,
 		view.WithConnector(demoConn),
 		view.WithCriteria("id"),
@@ -53,12 +59,14 @@ func (s *Service) Init(ctx context.Context) error {
                     FROM USER_ACL `),
 					view.WithConnector(aclConn)))),
 	)
-	s.reader.Resource.AddViews(aView)
-	return s.reader.Resource.Init(ctx)
+	if err = s.AddViews(ctx, aView); err != nil {
+		return err
+	}
+	return nil
 }
 
 func New(cfg *config.Config) *Service {
 	ret := &Service{config: cfg}
-	ret.reader = &reader.Service{}
+	ret.Service, _ = datly.New(context.Background())
 	return ret
 }
